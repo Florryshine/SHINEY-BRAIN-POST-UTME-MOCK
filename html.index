@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shiney Brain Academy · POST-UTME Mock · Subject Selector</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    }
+    body {
+      background: linear-gradient(145deg, #f0f6fb 0%, #dce8f0 100%);
+      min-height: 100vh;
+      padding: 1.5rem 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .container {
+      max-width: 1100px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(4px);
+      border-radius: 48px 48px 32px 32px;
+      box-shadow: 0 24px 48px -12px rgba(0, 20, 30, 0.35);
+      padding: 2rem 2rem 2.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+    h1 {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      font-weight: 700;
+      font-size: 2.0rem;
+      letter-spacing: -0.5px;
+      color: #0b2b3d;
+      border-bottom: 4px solid #f5b042;
+      padding-bottom: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+    h1 small {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #2a5775;
+      margin-left: auto;
+      background: #dce9f2;
+      padding: 0.2rem 1.2rem;
+      border-radius: 40px;
+      letter-spacing: 0.3px;
+    }
+    .top-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.8rem;
+      background: #d4e3ed;
+      padding: 0.8rem 1.8rem;
+      border-radius: 60px;
+      color: #0d3345;
+      font-weight: 500;
+    }
+    .badge {
+      background: #0b2b3d;
+      color: white;
+      padding: 0.2rem 1.4rem;
+      border-radius: 40px;
+      font-size: 0.9rem;
+    }
+
+    /* Subject selector */
+    .subject-selector {
+      background: #eaf2f9;
+      border-radius: 32px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+      border: 2px dashed #2a5f7a;
+    }
+    .subject-selector h3 {
+      font-size: 1.1rem;
+      color: #0b2b3d;
+      margin-bottom: 0.8rem;
+    }
+    .subject-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 0.6rem 1rem;
+    }
+    .subject-grid label {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: white;
+      padding: 0.5rem 1rem;
+      border-radius: 60px;
+      font-weight: 500;
+      color: #1a4053;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: 0.15s;
+      font-size: 0.95rem;
+    }
+    .subject-grid label:hover {
+      border-color: #8bb4cc;
+      background: #f2f8fe;
+    }
+    .subject-grid input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #1f6d92;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .subject-grid label.selected {
+      border-color: #1f6d92;
+      background: #d4e8f5;
+    }
+    .subject-grid label.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 1.2rem;
+    }
+    .btn {
+      border: none;
+      background: white;
+      padding: 0.7rem 2rem;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #0b2b3d;
+      border: 1px solid #cbdae6;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-primary {
+      background: #0b2b3d;
+      border-color: #0b2b3d;
+      color: white;
+      box-shadow: 0 6px 12px rgba(11, 43, 61, 0.25);
+    }
+    .btn-primary:hover {
+      background: #1a4057;
+      transform: scale(0.97);
+    }
+    .btn-primary:disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .btn-success {
+      background: #1f7a4a;
+      border-color: #1f7a4a;
+      color: white;
+    }
+    .btn-success:hover {
+      background: #2a8f58;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #2c5e7a;
+      color: #1a4053;
+    }
+    .btn-outline:hover {
+      background: #d4e3ed;
+    }
+    .btn:disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    /* Question area */
+    #examArea {
+      display: none;
+    }
+    .q-container {
+      background: white;
+      border-radius: 32px;
+      padding: 1.8rem 2rem;
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.02), 0 8px 20px rgba(0, 20, 30, 0.06);
+      margin-bottom: 1.8rem;
+    }
+    .q-text {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #0b2b3d;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .q-meta {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+      color: #2a5775;
+      margin-bottom: 0.8rem;
+      font-weight: 500;
+    }
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem 1.2rem;
+    }
+    @media (max-width: 600px) {
+      .options-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      background: #f2f8fe;
+      padding: 0.7rem 1.2rem;
+      border-radius: 60px;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: 0.12s;
+    }
+    .option-item:hover:not(.disabled-item) {
+      background: #e3eff9;
+      border-color: #b3cfe0;
+    }
+    .option-item input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      accent-color: #1f6d92;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .option-item label {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #1a4053;
+      cursor: pointer;
+      flex: 1;
+    }
+    .option-item.correct-highlight {
+      background: #b8e0c0;
+      border-color: #2b7a4b;
+    }
+    .option-item.wrong-highlight {
+      background: #fbd6d6;
+      border-color: #b13e3e;
+    }
+    .option-item.disabled-item {
+      opacity: 0.9;
+    }
+    .nav-area {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+    .result-panel {
+      margin-top: 2rem;
+      background: #ffffffd0;
+      backdrop-filter: blur(4px);
+      border-radius: 40px;
+      padding: 1.5rem 2rem;
+      border: 2px solid #e2edf5;
+      display: none;
+    }
+    .result-stats {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+    .score-badge {
+      background: #1f6d92;
+      color: white;
+      padding: 0.5rem 2.2rem;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+    }
+    .score-badge span {
+      font-size: 1rem;
+      font-weight: 400;
+      opacity: 0.8;
+    }
+    .correction-toggle {
+      background: #e8f0f7;
+      border-radius: 60px;
+      padding: 0.4rem 1.4rem;
+      font-weight: 600;
+      color: #0b2b3d;
+      cursor: pointer;
+      border: 1px solid #b9d0df;
+      transition: 0.1s;
+    }
+    .correction-toggle:hover {
+      background: #d4e3ed;
+    }
+    .correction-area {
+      margin-top: 1.5rem;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+    }
+    .correction-area.open {
+      max-height: 3000px;
+    }
+    .correction-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 0.4rem;
+      padding: 0.8rem 0;
+    }
+    .correction-item {
+      background: #f3f8fe;
+      border-radius: 40px;
+      padding: 0.25rem 1rem 0.25rem 1.4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      border-left: 4px solid #b9d0df;
+    }
+    .correction-item .qnum {
+      font-weight: 600;
+      color: #0b2b3d;
+    }
+    .correction-item .mark {
+      font-weight: 700;
+    }
+    .mark.correct {
+      color: #1a7a46;
+    }
+    .mark.wrong {
+      color: #b13e3e;
+    }
+    .footnote {
+      margin-top: 2rem;
+      text-align: center;
+      color: #2a5775;
+      opacity: 0.6;
+      font-size: 0.85rem;
+    }
+    .subject-tag {
+      display: inline-block;
+      background: #0b2b3d;
+      color: white;
+      padding: 0.1rem 1rem;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .info-msg {
+      background: #fef7e0;
+      border-radius: 16px;
+      padding: 0.8rem 1.5rem;
+      border-left: 6px solid #f5b042;
+      margin-bottom: 1.2rem;
+      font-weight: 500;
+      color: #4a3a1a;
+    }
+  </style>
+</head>
+<body>
+<div class="container" id="app">
+
+  <h1>
+    🧠 Shiney Brain Academy
+    <small>POST-UTME Mock · 4 Subjects</small>
+  </h1>
+
+  <div class="top-bar">
+    <span>📚 Choose <strong>4 subjects</strong> · 25 questions each</span>
+    <span class="badge" id="progressDisplay">0 / 100</span>
+  </div>
+
+  <!-- Subject selector -->
+  <div class="subject-selector" id="selectorPanel">
+    <h3>✏️ Select your 4 subjects</h3>
+    <div class="subject-grid" id="subjectGrid"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" id="startExamBtn">🚀 Start Exam</button>
+      <button class="btn btn-outline" id="resetSelectionBtn">⟳ Reset</button>
+    </div>
+    <div id="selectorMsg" class="info-msg" style="margin-top:1rem;display:none;"></div>
+  </div>
+
+  <!-- Exam area -->
+  <div id="examArea">
+    <div class="q-container" id="questionContainer">
+      <div class="q-meta">
+        <span id="qSubjectTag" class="subject-tag">Subject</span>
+        <span id="qCounter">1 / 100</span>
+      </div>
+      <div class="q-text" id="questionText">Loading...</div>
+      <div class="options-grid" id="optionsContainer"></div>
+    </div>
+
+    <div class="nav-area">
+      <div>
+        <button class="btn btn-outline" id="prevBtn">◀ Previous</button>
+        <button class="btn btn-outline" id="nextBtn">Next ▶</button>
+      </div>
+      <div>
+        <button class="btn btn-primary" id="submitBtn">✅ Submit & see results</button>
+        <button class="btn btn-success" id="resetExamBtn">⟳ Retry</button>
+      </div>
+    </div>
+
+    <div class="result-panel" id="resultPanel">
+      <div class="result-stats">
+        <div>
+          <strong style="font-size:1.2rem;">📊 Your Score</strong>
+          <div class="score-badge" id="scoreDisplay">0 <span>/ 100</span></div>
+        </div>
+        <div class="correction-toggle" id="correctionToggle">
+          <span>📖</span> Show corrections
+        </div>
+      </div>
+      <div class="correction-area" id="correctionArea">
+        <div class="correction-grid" id="correctionGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footnote">Shiney Brain Academy · POST-UTME Mock · 4 subjects · 100 questions</div>
+</div>
+
+<script>
+  (function() {
+    // -------- SUBJECT BANKS (25 questions each) --------
+    function makeBank(subject, qs) {
+      return qs.map((q, i) => ({
+        id: subject.slice(0,3)+'_'+(i+1),
+        subject: subject,
+        text: q.text,
+        options: q.options,
+        correct: q.correct,
+        selected: null,
+        answered: false,
+      }));
+    }
+
+    // ----- ENGLISH -----
+    const englishQs = [
+      { text: "The Governor has good intentions, but he is unable to _____ them.", options: ["Carry them on", "Carry them off", "Carry them along", "Carry them out"], correct: 3 },
+      { text: "Since you are educated, you _____ be better than the uneducated.", options: ["Is suppose", "Are suppose", "Is supposing", "Are supposed"], correct: 3 },
+      { text: "Abraham asked me _____.", options: ["To not come again", "not again to come", "to again not come", "not to come again"], correct: 3 },
+      { text: "She prides herself _____ her cooking.", options: ["about", "on", "for", "In"], correct: 1 },
+      { text: "He is fond of talking too much; he is _____.", options: ["Flattering", "Quarrelsome", "Loquacious", "voracious"], correct: 2 },
+      { text: "My sister has stopped drinking beer. This means:", options: ["My sister cannot find any beer", "My sister dislikes beer", "She stopped temporarily", "She no longer drinks beer"], correct: 3 },
+      { text: "The word OPPOSITE in meaning to 'flexible' is:", options: ["Rigid", "Correct", "Smooth", "Upright"], correct: 0 },
+      { text: "The University has offered _____ accommodation to its staff.", options: ["Popular", "Permanent", "Recognized", "Regular"], correct: 1 },
+      { text: "Mary complained that she slept on the _____ floor.", options: ["Smooth", "Rough", "Bad", "Harsh"], correct: 0 },
+      { text: "The lady acted _____ when thieves attacked her.", options: ["Shyly", "Fearlessly", "Indiscreetly", "Timidly"], correct: 3 },
+      { text: "Choose the word NEAREST in meaning to 'sonorous':", options: ["High pitched", "Beautiful", "Strong", "Throaty"], correct: 1 },
+      { text: "'The rampage in England shows that youths react the same way under provocation' means:", options: ["Youths in England are very good", "Youths in England are miscreants", "Youths act the same way when provoked", "Youths provoke people in England"], correct: 2 },
+      { text: "'To carry coals to Newcastle' means:", options: ["To take things where abundant", "To dirty a place", "To bring shame", "To behave ungrateful"], correct: 0 },
+      { text: "Choose the word that BEST COMPLETES: 'The college bus was traveling at a high _____ when the accident occurred.'", options: ["velocity", "acceleration", "rapidly", "speed"], correct: 3 },
+      { text: "The opposite of 'loquacious' is:", options: ["Quiet", "Busy", "Talkative", "Beautiful"], correct: 0 },
+      { text: "'The police knew that the suspect was not being straight with them' means:", options: ["Not telling the truth", "Not friendly", "Afraid", "Timid"], correct: 0 },
+      { text: "The word OPPOSITE in meaning to 'derogatory' is:", options: ["Unpleasant", "Complimentary", "Expensive", "Inconsiderate"], correct: 1 },
+      { text: "'All our plans fell through at the last moment' means:", options: ["Exposed", "Delayed", "Abandoned", "Failed"], correct: 3 },
+      { text: "'The teacher spoke with his tongue in his cheek' means:", options: ["Did not mean what he said", "Disappointed", "Angry", "Tried to encourage"], correct: 0 },
+      { text: "Choose the word NEAREST in meaning to 'inadvertent':", options: ["Unintentional", "Unconditional", "Improper", "Unfortunate"], correct: 0 },
+      { text: "'Every programming language and software package _____ limitations.'", options: ["Have its", "Have their", "Has its", "Has their"], correct: 2 },
+      { text: "'A number of students _____ missed the opportunity to register.'", options: ["Is", "Have", "Do", "Will"], correct: 1 },
+      { text: "The word OPPOSITE in meaning to 'staunch' is:", options: ["Disloyal", "Faithful", "Vocal", "Courageous"], correct: 0 },
+      { text: "'A good manager enforces his instructions consistently' is biased because it suggests:", options: ["Female managers are hated", "Female managers cannot enforce", "Managers are usually men", "All male managers are good"], correct: 2 },
+      { text: "Choose the word NEAREST in meaning to 'ubiquitous':", options: ["Dangerous", "Harmful", "Trouble", "Everywhere"], correct: 3 },
+    ];
+
+    // ----- MATHEMATICS -----
+    const mathQs = [
+      { text: "If 5, 8, 6 and k occur with frequencies 3, 2, 4 and 1 and have mean 5.7, find k.", options: ["4", "3", "2", "1"], correct: 2 },
+      { text: "Letters of MATRICULATION are cut. Find probability of drawing a vowel.", options: ["2/13", "5/13", "6/13", "8/13"], correct: 2 },
+      { text: "Find the gradient of the line through P(1,1) and Q(2,5).", options: ["4", "2", "3", "5"], correct: 0 },
+      { text: "If three unbiased coins are tossed, probability they are all heads?", options: ["1/8", "1/3", "1/6", "1/9"], correct: 0 },
+      { text: "Express 0.00562 in standard form.", options: ["5.62×10⁻³", "5.62×10⁻²", "5.62×10²", "5.62×10³"], correct: 0 },
+      { text: "If Sn = n² + 2n, find the general term.", options: ["n+1", "2n+1", "3n+1", "4n+1"], correct: 1 },
+      { text: "If 6th term of AP is 11 and first is 1, find common difference.", options: ["3", "5", "-2", "2"], correct: 3 },
+      { text: "Angles of quadrilateral: x, 2x+5, x+15, 3x-10. Find x.", options: ["50°", "52.86°", "60°", "61.43°"], correct: 0 },
+      { text: "If sin(x+30°)=cos40°, find x.", options: ["10°", "20°", "59°", "65°"], correct: 1 },
+      { text: "If 367 + 245 = 56y, find y.", options: ["4", "5", "6", "7"], correct: 2 },
+      { text: "Length of rectangle is 3× width. Width=5in. Area?", options: ["15", "20", "30", "75"], correct: 3 },
+      { text: "Simplify: Log6 + Log2 - Log12", options: ["-4", "-1", "0", "1"], correct: 2 },
+      { text: "Variance is 25. Standard deviation?", options: ["125", "75", "15", "5"], correct: 3 },
+      { text: "Chord of circle radius 26cm, 10cm from centre. Length?", options: ["16cm", "27.86cm", "32cm", "48cm"], correct: 3 },
+      { text: "Solve: 4/a + 1/(5a) = 3", options: ["2√3", "1/2", "1/3", "1/4"], correct: 2 },
+      { text: "Sum of first 20 terms of 8,12,16...", options: ["1400", "1500", "1040", "960"], correct: 2 },
+      { text: "3rd term AP = -9, 7th = -29. Find 10th.", options: ["44", "-165", "-44", "165"], correct: 2 },
+      { text: "If sin α = √5/3, tan α = ?", options: ["1/3", "√3/2", "√5", "√5/3"], correct: 2 },
+      { text: "Binary operation: x*y = (x²-y²)/(2xy). Find -5*3.", options: ["-1/25", "1/25", "-8/15", "8/15"], correct: 2 },
+      { text: "Probability integer (1<x<20) divisible by both 2 and 3.", options: ["1/20", "1/3", "3/20", "7/10"], correct: 2 },
+      { text: "Find the average of the first four prime numbers greater than 10.", options: ["20", "19", "17", "15"], correct: 2 },
+      { text: "Simplify: 125⁻¹/³ × 4⁻¹/²", options: ["1/35", "1/10", "1/5", "1/20"], correct: 1 },
+      { text: "If cos(A) = 1/2, which angle has cos = -1/2?", options: ["30°", "120°", "150°", "210°"], correct: 1 },
+      { text: "Factorize: 35 - 2b - b²", options: ["(7+b)(5-b)", "(7-b)(5+b)", "(35-2b)(b-1)", "(7+b)(5+b)"], correct: 0 },
+      { text: "Find the median of: 4,94,13,7,14,10,17", options: ["13", "7", "10.5", "10"], correct: 2 },
+    ];
+
+    // ----- BIOLOGY -----
+    const bioQs = [
+      { text: "Which organelle is used for locomotion in Paramecium?", options: ["Pseudopodium", "Trichocyst", "Cilium", "Pellicle"], correct: 2 },
+      { text: "The organelle involved in tissue respiration is the:", options: ["Endoplasmic reticulum", "Ribosome", "Golgi body", "Mitochondrion"], correct: 3 },
+      { text: "Part of brain controlling heart rate and breathing is:", options: ["Medulla", "Cerebrum", "Cerebellum", "Pineal body"], correct: 0 },
+      { text: "Which animal is cold-blooded?", options: ["Cat", "Lizard", "Whale", "Bird"], correct: 1 },
+      { text: "A distinguishing feature of mammals is:", options: ["Skin", "Scale", "Nail", "Hair"], correct: 3 },
+      { text: "Carbohydrate manufacture in plants occurs in:", options: ["Leaves only", "Green stems only", "Chlorophyllous parts", "Flowering plants"], correct: 2 },
+      { text: "Passage for both urine and semen in males is:", options: ["Bladder", "Ureter", "Seminal vesicle", "Urethra"], correct: 3 },
+      { text: "Which group has Malpighian tubules?", options: ["Lizards/snakes/frogs", "Crickets/houseflies/grasshoppers", "Millipedes/centipedes/scorpions", "Earthworms/roundworms/flatworms"], correct: 1 },
+      { text: "Most reliable measure of growth is:", options: ["Length", "Volume", "Surface area", "Dry weight"], correct: 3 },
+      { text: "Osmoregulation in Amoeba is by:", options: ["Pseudopodium", "Food vacuole", "Contractile vacuole", "Nucleus"], correct: 2 },
+      { text: "The heart of adult frog consists of:", options: ["Two auricles and two ventricles", "One auricle and one ventricle", "Two ventricles and one auricle", "One ventricle and two auricles"], correct: 3 },
+      { text: "In adult mammalian blood, cells without nuclei are:", options: ["Erythrocytes", "Lymphocytes", "Leucocytes", "Phagocytes"], correct: 0 },
+      { text: "Which movement occurs during exhalation?", options: ["Diaphragm and intercostals relax", "Thoracic cavity increases", "Diaphragm and intercostals contract", "Diaphragm contracts, intercostals relax"], correct: 0 },
+      { text: "Which is NOT a function of mammalian skeleton?", options: ["Protection", "Respiration", "Transportation", "Support"], correct: 2 },
+      { text: "The nucleus is considered central because it:", options: ["Contains genetic material", "Contains nuclear sap", "Is bounded by membrane", "Is located at centre"], correct: 0 },
+      { text: "Spirogyra reproduces vegetatively by:", options: ["Spore production", "Fragmentation", "Multiple fission", "Binary fission"], correct: 1 },
+      { text: "All the following are digestive enzymes EXCEPT:", options: ["Bile", "Lipase", "Maltase", "Pepsin"], correct: 0 },
+      { text: "A tapeworm has no alimentary canal because:", options: ["It is autotrophic", "It does not feed", "It has no enzymes", "Its body absorbs digested food"], correct: 3 },
+      { text: "Energy is produced in the cell at the:", options: ["Nucleus", "Nucleolus", "Lysosomes", "Mitochondria"], correct: 3 },
+      { text: "Plants that survive with limited water are:", options: ["Bryophytes", "Mesophytes", "Xerophytes", "Hydrophytes"], correct: 2 },
+      { text: "In a water culture experiment, yellowing leaves indicate deficiency of:", options: ["Copper", "Iron", "Magnesium", "Calcium"], correct: 1 },
+      { text: "In Millon's test, protein turns white precipitate to:", options: ["Blue on heating", "Yellow on heating", "Green on heating", "Red on heating"], correct: 3 },
+      { text: "Regulation of blood sugar occurs in:", options: ["Pancreas", "Ileum", "Liver", "Kidney"], correct: 0 },
+      { text: "Unicellular organisms transport by diffusion because they have:", options: ["Large volume:surface ratio", "Large surface:volume ratio", "Bodies immersed in nutrients", "Outer membrane of cellulose"], correct: 1 },
+      { text: "In which group is Malpighian tubule found?", options: ["Lizards/snakes/frogs", "Crickets/houseflies/grasshoppers", "Millipedes/centipedes/scorpions", "Earthworms/roundworms/flatworms"], correct: 1 },
+    ];
+
+    // ----- CHEMISTRY -----
+    const chemQs = [
+      { text: "Oxidation state of chlorine in KClO₃ is:", options: ["+1", "+3", "+5", "+7"], correct: 2 },
+      { text: "Which is an alloy of aluminium?", options: ["Brass", "Bronze", "Gelena", "Magnalium"], correct: 3 },
+      { text: "Orange juice pH=3.80. [OH⁻] is:", options: ["1.6×10⁻⁴", "6.3×10⁻¹¹", "6.3×10⁻⁴", "1.6×10⁻¹¹"], correct: 1 },
+      { text: "Atomicity of ozone is:", options: ["1", "2", "3", "4"], correct: 2 },
+      { text: "Which compound undergoes addition reactions?", options: ["Ethyne", "Butane", "Pentane", "Tetrachloromethane"], correct: 0 },
+      { text: "Process of rearranging atoms in petroleum refining:", options: ["Polymerization", "Hydrocracking", "Reforming", "Catalytic cracking"], correct: 2 },
+      { text: "Ammonia gas is dried with:", options: ["Concentrated H₂SO₄", "Quicklime", "Anhydrous CaCl₂", "MgSO₄"], correct: 1 },
+      { text: "Max electrons in d-subshell:", options: ["6", "8", "10", "12"], correct: 2 },
+      { text: "Heat of reaction for H₂O(g) is heat of:", options: ["Solution", "Neutralization", "Sublimation", "Activation"], correct: 0 },
+      { text: "Starch hydrolysis produces:", options: ["Glucose", "Maltose", "Sucrose", "Fructose"], correct: 0 },
+      { text: "The pH value indicating a basic solution is:", options: ["11", "3", "0", "-1"], correct: 0 },
+      { text: "Oxidation is the process of:", options: ["Gain of electrons", "Loss of electrons", "Gain of hydrogen", "Loss of oxygen"], correct: 1 },
+      { text: "Which salt can be melted with decomposition?", options: ["Na₂CO₃", "CaCO₃", "MgCO₃", "ZnCO₃"], correct: 2 },
+      { text: "The main constituents of petroleum are:", options: ["Alkanes", "Alkynes", "Gases", "Hydrocarbons"], correct: 3 },
+      { text: "A substance used as a ripening agent for fruits is:", options: ["Ethane", "Propane", "Methane", "Butane"], correct: 1 },
+      { text: "The shape of methane (CH₄) is:", options: ["Square planar", "Planar", "Linear", "Tetrahedral"], correct: 3 },
+      { text: "Which of the following is NOT a homogeneous mixture?", options: ["Filtered sea water", "Soft drink", "Flood water", "Writing ink"], correct: 2 },
+      { text: "The characteristic reaction of carbonyl compounds is:", options: ["Substitution", "Elimination", "Addition", "Saponification"], correct: 2 },
+      { text: "Which set has the same outermost electronic configuration?", options: ["H, He, Be", "H, Li, Be", "H, Li, Na", "He, Ne, Ar"], correct: 2 },
+      { text: "Which periodic property decreases down the group?", options: ["Atomic radius", "Electron affinity", "Ionic radius", "Electropositivity"], correct: 0 },
+      { text: "Which is an ore of aluminium?", options: ["Casciterite", "Haematite", "Magnetite", "Cryolite"], correct: 3 },
+      { text: "In the reaction: MnO₄⁻ + 8H⁺ + ne⁻ → Mn²⁺ + 4H₂O, n = ?", options: ["5", "4", "3", "2"], correct: 0 },
+      { text: "Which ion is a pollutant in drinking water even in trace amounts?", options: ["Ca²⁺", "Hg²⁺", "Mg²⁺", "Fe²⁺"], correct: 1 },
+      { text: "Helium is used in observation balloons because it is:", options: ["Light and combustible", "Light and non-combustible", "Heavy and combustible", "Heavy and non-combustible"], correct: 1 },
+      { text: "Which solution will have pH < 7?", options: ["Na₂SO₄(aq)", "NaCl(aq)", "Na₂CO₃(aq)", "NH₄Cl(aq)"], correct: 3 },
+    ];
+
+    // ----- PHYSICS -----
+    const physicsQs = [
+      { text: "Which is a scalar quantity?", options: ["Momentum", "Acceleration", "Displacement", "Distance"], correct: 3 },
+      { text: "Body starts from rest, a=8m/s² for 10s. Distance in 8th second?", options: ["256m", "196m", "120m", "60m"], correct: 3 },
+      { text: "2000W kettle, 2kg water, 20°C to 100°C. Time?", options: ["420s", "336s", "168s", "84s"], correct: 1 },
+      { text: "Pitch of sound depends on:", options: ["Timbre", "Harmony", "Quality", "Frequency"], correct: 3 },
+      { text: "Which statement about liquid pressure is NOT correct?", options: ["Proportional to depth", "Same at same level", "Equal in all directions", "Depends on vessel shape"], correct: 3 },
+      { text: "Simple pendulum period 2.0s, length doubled. New period?", options: ["1.00s", "1.41s", "0.35s", "2.83s"], correct: 3 },
+      { text: "Heat transfer without material medium is:", options: ["Conduction", "Radiation", "Convection", "Propagation"], correct: 1 },
+      { text: "16N on 4kg block at rest. Velocity at t=5s?", options: ["4m/s", "10m/s", "20m/s", "50m/s"], correct: 2 },
+      { text: "Angle between mirror and incident ray = 35°. Angle of reflection?", options: ["55°", "50°", "45°", "70°"], correct: 0 },
+      { text: "Ability of eye to focus at different distances is:", options: ["Binocular", "Accommodation", "Hypermetropia", "Colourization"], correct: 1 },
+      { text: "Which of the following waves is both mechanical and transverse?", options: ["X-ray", "Water wave", "Sound wave", "Radio wave"], correct: 1 },
+      { text: "The dimension of power is:", options: ["ML⁻¹T²", "ML²T⁻²", "ML²T⁻³", "ML⁻¹T⁻²"], correct: 2 },
+      { text: "X-rays were discovered by:", options: ["Isaac Newton", "Michael Faraday", "J.J. Thompson", "W. Roentgen"], correct: 3 },
+      { text: "Natural radioactivity was discovered by:", options: ["Niel Bohr", "Henri Becquerel", "De Broglie", "Rutherford"], correct: 1 },
+      { text: "In a D.C motor, which does NOT apply?", options: ["Spindle", "Fixed carbon brushes", "Powerful magnetic field", "Slip rings"], correct: 3 },
+      { text: "The induction coil generates:", options: ["High voltage from low AC", "Low voltage from high DC", "High voltage from low DC", "Low voltage from low AC"], correct: 2 },
+      { text: "A gas at P and 27°C heated to 77°C at constant volume. New pressure?", options: ["0.85P", "0.86P", "1.16P", "1.18P"], correct: 2 },
+      { text: "Two lamps 40W and 220W in series. Total power?", options: ["Low", "20W", "40W", "80W"], correct: 0 },
+      { text: "EMF produced when magnet moved through coil depends on:", options: ["Number of turns", "Strength of magnet", "Speed of magnet", "All of the above"], correct: 3 },
+      { text: "Potential difference 6V, current 5A, 200s. Heat produced?", options: ["4800cal", "6000cal", "2400J", "240kcal"], correct: 3 },
+      { text: "Speed of light in air 3×10⁸ m/s. Speed in glass (n=1.65)?", options: ["1.82×10⁸", "3×10⁸", "6×10⁸", "1.82×10²"], correct: 0 },
+      { text: "Electric iron 100W, 250V. Resistance and current?", options: ["62.5Ω, 0.4A", "16Ω, 6.25A", "4.95Ω, 0.4A", "4Ω, 62.5A"], correct: 0 },
+      { text: "Refractive index √2. Critical angle?", options: ["45°", "50°", "56°25'", "75°"], correct: 0 },
+      { text: "Rocket burns 0.01kg fuel/s at 5000m/s. Force?", options: ["500,000N", "500N", "50N", "5,000N"], correct: 2 },
+      { text: "Rectangular tank 4m×3m, water depth 2m. Force on base? (ρ=10³, g=10)", options: ["2.4×10⁵N", "2.4×10⁴N", "2.0×10⁴N", "1.7×10⁴N"], correct: 0 },
+    ];
+
+    // ----- ECONOMICS -----
+    const econQs = [
+      { text: "Land is significant to economy because:", options: ["Enables building industries", "We build houses on it", "Highways on it", "Vital resources enrich economy"], correct: 3 },
+      { text: "All are assets of commercial bank EXCEPT:", options: ["Cash", "Bills discounted", "Bank deposits", "Advances to customers"], correct: 2 },
+      { text: "Quantity Theory of Money states increase in money causes:", options: ["Geometrical price rise", "Unequal price rise", "Proportionate price rise", "Absolute price rise"], correct: 2 },
+      { text: "In socialist economy, production decisions made by:", options: ["Producers", "Expected profit", "Price", "Government"], correct: 3 },
+      { text: "Terms of trade means price:", options: ["Ratio of import to export", "Export multiplied by import", "Ratio of export to import", "None of the above"], correct: 2 },
+      { text: "In perfect competition, MC curve intersects AC curve:", options: ["From below at lowest point", "From above at lowest point", "Below before lowest", "At zero point"], correct: 0 },
+      { text: "International trade occurs because of differences in:", options: ["Production cost", "Language", "Government", "Currency"], correct: 0 },
+      { text: "One major aim of a cartel is:", options: ["Increase production", "Regulate output through quota", "Have joint account", "Share profits equally"], correct: 1 },
+      { text: "Which does NOT hinder efficient distribution in West Africa?", options: ["Inadequate transport", "Inadequate storage", "Inadequate credit", "Government participation"], correct: 3 },
+      { text: "Which is NOT a negative effect of inflation?", options: ["Lenders earn less", "Pensioners suffer", "Exports decline", "Borrowers tend to gain"], correct: 3 },
+      { text: "Devaluation means:", options: ["Reduction in national currency value", "Reduction in purchasing power of foreign currencies", "Reduction in domestic currency relative to foreign", "Increase in national currency value"], correct: 2 },
+      { text: "Which is NOT an advantage of price control?", options: ["Control of inflation", "Distortion of price mechanism", "Prevention of exploitation", "Control of producer's profit"], correct: 1 },
+      { text: "Cement industry located in Cross River because:", options: ["Imports raw materials", "Has large limestone deposit", "Soil unsuitable for other crops", "Land suitable for cement"], correct: 1 },
+      { text: "Which is NOT a type of mobility of labour?", options: ["Occupational", "Industrial", "Geographical", "Crisis"], correct: 3 },
+      { text: "Natural response to uneven distribution of resources is:", options: ["Hoarding", "Shifting cultivation", "Family planning", "Migration"], correct: 3 },
+      { text: "Subsistence agriculture means:", options: ["Cultivation for external use", "Cultivation for local industries", "Farming for urban dwellers", "Cultivation for household consumption"], correct: 3 },
+      { text: "Natural growth rate of population is:", options: ["Death rate plus net immigration", "Migration rate divided by birth rate", "Birth rate minus death rate", "Sum of birth rate and net immigration"], correct: 2 },
+      { text: "Who bears greater burden of indirect tax when demand is inelastic?", options: ["Wholesaler", "Shareholder", "Retailer", "Consumer"], correct: 3 },
+      { text: "Which is NOT a feature of underdevelopment?", options: ["Low per capita income", "Vicious circle of poverty", "Low level of industrialization", "High per capita income"], correct: 3 },
+      { text: "Economic system relying mainly on price mechanism is:", options: ["Capitalist", "Command", "Combined", "Traditional"], correct: 0 },
+      { text: "Theory of consumer behaviour assumes EXCEPT:", options: ["Consumer is irrational", "Consumer taste constant", "Consumer has budget constraint", "Consumer maximizes utility"], correct: 0 },
+      { text: "During consolidation, banks got capital through:", options: ["Mergers only", "Mergers and acquisition", "Acquisition only", "Getting money from people"], correct: 1 },
+      { text: "Economics is the study of:", options: ["How to spend family income", "How to find minimum cost", "Interpretation of scarce resources", "How scarce resources can be used efficiently"], correct: 3 },
+      { text: "Which specializes in lending for real estate development?", options: ["Commercial banks", "Central bank", "Mortgage banks", "Merchant banks"], correct: 2 },
+      { text: "Factors of production are:", options: ["Resources for provision of goods/services", "Skills in directing flow of goods", "Monetary tools for production", "Elements in policy formulation"], correct: 0 },
+    ];
+
+    // ----- GOVERNMENT -----
+    const govQs = [
+      { text: "Theory of separation of powers first formulated by:", options: ["Baron de Montesquieu", "Albert Dicey", "Lord Bryce", "Jean Bodin"], correct: 0 },
+      { text: "Which is NOT a pressure group?", options: ["PDP", "ASUU", "NASU", "NLC"], correct: 0 },
+      { text: "The Ombudsman originated in:", options: ["U.S.A", "Sweden", "Britain", "Greece"], correct: 1 },
+      { text: "Aba riots of 1929 resulted from:", options: ["Attempt to introduce taxation", "Introduction of Western education", "Yoruba political organization", "Pre-colonial Bini system"], correct: 0 },
+      { text: "Constitution that introduced federalism to Nigeria was:", options: ["McPherson Constitution", "Clifford Constitution", "Lyttleton Constitution", "Richards Constitution"], correct: 2 },
+      { text: "The name 'Nigeria' was suggested by:", options: ["Sir Frederick Lugard", "Nnamdi Azikiwe", "Flora Shaw", "Bishop Ajayi Crowther"], correct: 2 },
+      { text: "Ability of a state to make laws free from external control is:", options: ["Independence", "Power", "Authority", "Sovereignty"], correct: 3 },
+      { text: "OPEC was founded in:", options: ["1955", "1960", "1979", "1977"], correct: 1 },
+      { text: "Highest office in civil service structure is:", options: ["Executive class", "Professional class", "Administrative class", "Technical class"], correct: 2 },
+      { text: "One major disadvantage of a two-party system is:", options: ["Does not allow citizen participation", "Divides country into factions", "Creates two countries", "Stifles public opinion"], correct: 1 },
+      { text: "Fascism emphasizes:", options: ["Equality", "Individualism", "Nationalism", "Totalitarianism"], correct: 3 },
+      { text: "When a court declares executive action ultra-vires, it means:", options: ["Executive must reconsider", "Action never brought up again", "Only legislature can deal", "Action is illegal and of no effect"], correct: 3 },
+      { text: "The two parties in 1959 coalition were:", options: ["NPC and NCNC", "NCNC and AG", "NPC and NNA", "PRP and UPGA"], correct: 0 },
+      { text: "Disenfranchisement refers to:", options: ["Qualification of voters", "Disqualification of aspirants", "Denial of right to vote", "Right to vote in all elections"], correct: 2 },
+      { text: "Headquarters of OAU is in:", options: ["Togo", "Senegal", "Addis Ababa", "Nigeria"], correct: 2 },
+      { text: "Nigeria changed to right-hand driving in:", options: ["1970", "1973", "1975", "1977"], correct: 1 },
+      { text: "Mary Slessor was popular for:", options: ["Abolition of slave trade", "Intervention in killing of twins", "Cordial relationship with Efik", "Soliciting for peace"], correct: 1 },
+      { text: "The second military coup in Nigeria took place on:", options: ["July 29, 1966", "July 29, 1975", "Feb 13, 1976", "Oct 1, 1966"], correct: 0 },
+      { text: "Head of executive in parliamentary system is called:", options: ["Senate President", "Prime Minister", "President", "Governor-General"], correct: 1 },
+      { text: "Supreme Court became highest Court of Appeal under:", options: ["Lyttleton Constitution", "Republican constitution", "McPherson constitution", "Independence constitution"], correct: 1 },
+      { text: "ECOWAS is primarily:", options: ["Economic association", "Political association", "Cultural association", "Social association"], correct: 0 },
+      { text: "Major advantage of secret ballot is:", options: ["Faster than other systems", "Nobody can be prevented from voting", "Ensures anonymity of voter", "Extends franchise to all adults"], correct: 2 },
+      { text: "Residual powers under independence constitution belonged to:", options: ["Federal government", "Regional government", "Local government", "Both Federal and Regional"], correct: 1 },
+      { text: "Voting started in Nigeria in 1923 because Clifford constitution granted:", options: ["Decolonization", "Parliamentary government", "Elective principle", "Self government"], correct: 2 },
+      { text: "Which did NOT formally recognize 'Biafra'?", options: ["Zambia", "Tanzania", "Gabon", "Ivory Coast"], correct: 2 },
+    ];
+
+    // ----- GENERAL PAPER / CURRENT AFFAIRS -----
+    const genQs = [
+      { text: "Muammar Gaddafi was assassinated on:", options: ["Sept 11, 2009", "Sept 11, 2011", "Oct 20, 2011", "Oct 19, 2011"], correct: 2 },
+      { text: "Egyptian leader forced out in 2011 was:", options: ["Anwar Sadat", "Ben Ali", "Mohammed Gaddafi", "Hosni Mubarak"], correct: 3 },
+      { text: "Gen. Murtala Mohammed was assassinated in:", options: ["1978", "1975", "1976", "1974"], correct: 2 },
+      { text: "Federal Capital (Abuja) was created in:", options: ["1990", "1986", "1991", "1987"], correct: 2 },
+      { text: "How many Geopolitical zones in Nigeria?", options: ["6", "36", "746", "774"], correct: 0 },
+      { text: "Author of 'Things Fall Apart' is:", options: ["Chinua Achebe", "Ola Rotimi", "Wole Soyinka", "Enechi Amachi"], correct: 0 },
+      { text: "Centre of Excellence is Lagos; Sunshine State is:", options: ["Ondo", "Oyo", "Osun", "Ekiti"], correct: 0 },
+      { text: "Most populous State in Nigeria is:", options: ["Oyo", "Niger", "Kano", "Sokoto"], correct: 2 },
+      { text: "'Government for the people' was proposed by:", options: ["George Bush", "Barak Obama", "Abraham Lincoln", "George Washington"], correct: 2 },
+      { text: "Nigerian flag was designed by:", options: ["Lord Lugard", "Taiwo Akinkunmi", "Mary Slessor", "Benedict Odiase"], correct: 1 },
+      { text: "Current national anthem was adopted in:", options: ["1963", "1960", "1978", "1979"], correct: 2 },
+      { text: "Capital of Mali is:", options: ["Bamako", "Mozambique", "Namibia", "Tripoli"], correct: 0 },
+      { text: "First female African president is:", options: ["Ellen Johnson Sirleaf", "Helen Johnson Sherrif", "Elizabeth Johnson Sherifield", "Dianna Johnson Sherfield"], correct: 0 },
+      { text: "UTME stands for:", options: ["Unified Tertiary Matriculation Examination", "Unified Tertiary Matriculation Education", "Unified Tertiary Matriculation Examinations", "Unified Tertiary Matriculations Examination"], correct: 0 },
+      { text: "Which is NOT a planet?", options: ["Earth", "Neptune", "Jupita", "Pluto"], correct: 2 },
+      { text: "Largest country in Africa is:", options: ["Nigeria", "Sudan", "Egypt", "Namibia"], correct: 1 },
+      { text: "Which country has the largest population?", options: ["USA", "China", "Germany", "India"], correct: 1 },
+      { text: "How many Senatorial Districts does Nigeria have?", options: ["109", "306", "774", "309"], correct: 0 },
+      { text: "How many Local Government Areas in Nigeria?", options: ["777", "774", "704", "707"], correct: 1 },
+      { text: "Nigeria's capital relocated from Lagos to Abuja in:", options: ["1990", "1999", "1991", "1979"], correct: 2 },
+      { text: "Slogan of Imo State is:", options: ["Eastern Heartland", "Salt of the Nation", "Land of Hope", "Centre of Excellence"], correct: 0 },
+      { text: "Yankari Game Reserve is in:", options: ["Borno", "Bauchi", "Yobe", "Katsina"], correct: 1 },
+      { text: "Obudu Cattle Ranch is in:", options: ["Benue", "Cross-River", "Akwa-Ibom", "Rivers"], correct: 1 },
+      { text: "An Octogenarian is someone aged:", options: ["80", "90", "100", "70"], correct: 0 },
+      { text: "Newly approved retirement age for University Professors is:", options: ["65", "75", "70", "72"], correct: 2 },
+    ];
+
+    // Build subject map
+    const subjectMap = {
+      'English': englishQs,
+      'Mathematics': mathQs,
+      'Biology': bioQs,
+      'Chemistry': chemQs,
+      'Physics': physicsQs,
+      'Economics': econQs,
+      'Government': govQs,
+      'General Paper': genQs,
+    };
+    const subjectKeys = Object.keys(subjectMap);
+
+    // ----- STATE -----
+    let selectedSubjects = [];
+    let fullQuestions = [];
+    let currentIndex = 0;
+    let examSubmitted = false;
+    let correctionVisible = false;
+
+    // DOM refs
+    const subjectGrid = document.getElementById('subjectGrid');
+    const startBtn = document.getElementById('startExamBtn');
+    const resetSelBtn = document.getElementById('resetSelectionBtn');
+    const selectorMsg = document.getElementById('selectorMsg');
+    const selectorPanel = document.getElementById('selectorPanel');
+    const examArea = document.getElementById('examArea');
+    const questionText = document.getElementById('questionText');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const qCounter = document.getElementById('qCounter');
+    const qSubjectTag = document.getElementById('qSubjectTag');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const resetExamBtn = document.getElementById('resetExamBtn');
+    const resultPanel = document.getElementById('resultPanel');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const correctionToggle = document.getElementById('correctionToggle');
+    const correctionArea = document.getElementById('correctionArea');
+    const correctionGrid = document.getElementById('correctionGrid');
+    const progressDisplay = document.getElementById('progressDisplay');
+
+    // Render subject checkboxes
+    function renderSubjectSelector() {
+      subjectGrid.innerHTML = '';
+      subjectKeys.forEach(key => {
+        const label = document.createElement('label');
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.value = key;
+        cb.id = 'sub_' + key.replace(/\s/g,'');
+        cb.checked = selectedSubjects.includes(key);
+        cb.addEventListener('change', function() {
+          if (this.checked) {
+            if (selectedSubjects.length >= 4) {
+              this.checked = false;
+              selectorMsg.style.display = 'block';
+              selectorMsg.textContent = '⚠️ You can select only 4 subjects.';
+              return;
+            }
+            selectedSubjects.push(key);
+            selectorMsg.style.display = 'none';
+          } else {
+            selectedSubjects = selectedSubjects.filter(s => s !== key);
+          }
+          updateSelectorUI();
+        });
+        label.appendChild(cb);
+        label.appendChild(document.createTextNode(' ' + key));
+        label.htmlFor = cb.id;
+        subjectGrid.appendChild(label);
+      });
+      updateSelectorUI();
+    }
+
+    function updateSelectorUI() {
+      const labels = subjectGrid.querySelectorAll('label');
+      labels.forEach((label, idx) => {
+        const cb = label.querySelector('input');
+        const key = subjectKeys[idx];
+        if (cb.checked) label.classList.add('selected');
+        else label.classList.remove('selected');
+        if (selectedSubjects.length >= 4 && !cb.checked) {
+          label.classList.add('disabled');
+        } else {
+          label.classList.remove('disabled');
+        }
+      });
+      startBtn.disabled = (selectedSubjects.length !== 4);
+    }
+
+    // Build exam from selected subjects
+    function buildExam() {
+      fullQuestions = [];
+      selectedSubjects.forEach(sub => {
+        const qs = subjectMap[sub];
+        if (qs) {
+          const bank = makeBank(sub, qs);
+          fullQuestions = fullQuestions.concat(bank);
+        }
+      });
+      // Shuffle within each subject? Keep as is.
+      // Reset state
+      fullQuestions.forEach(q => { q.selected = null; q.answered = false; });
+      examSubmitted = false;
+      correctionVisible = false;
+      correctionArea.classList.remove('open');
+      resultPanel.style.display = 'none';
+      submitBtn.disabled = false;
+      currentIndex = 0;
+      renderQuestion(0);
+      updateProgress();
+    }
+
+    function renderQuestion(index) {
+      const q = fullQuestions[index];
+      if (!q) return;
+      questionText.innerText = q.text;
+      qSubjectTag.textContent = q.subject;
+      qCounter.textContent = (index+1) + ' / ' + fullQuestions.length;
+
+      optionsContainer.innerHTML = '';
+      q.options.forEach((opt, idx) => {
+        const div = document.createElement('div');
+        div.className = 'option-item';
+        if (examSubmitted) {
+          div.classList.add('disabled-item');
+          if (q.correct === idx) div.classList.add('correct-highlight');
+          else if (q.selected === idx && q.selected !== q.correct) div.classList.add('wrong-highlight');
+        }
+        const radio = document.createElement('input');
+        radio.type = 'radio';
+        radio.name = 'q_' + q.id;
+        radio.value = idx;
+        radio.disabled = examSubmitted;
+        if (q.selected === idx) radio.checked = true;
+        const label = document.createElement('label');
+        label.innerText = opt;
+        div.appendChild(radio);
+        div.appendChild(label);
+        radio.addEventListener('change', function(e) {
+          if (examSubmitted) return;
+          const val = parseInt(e.target.value);
+          q.selected = val;
+          q.answered = true;
+          updateProgress();
+          // re-render to reflect selection highlight
+          renderQuestion(currentIndex);
+        });
+        optionsContainer.appendChild(div);
+      });
+
+      prevBtn.disabled = (index === 0);
+      nextBtn.disabled = (index === fullQuestions.length - 1);
+    }
+
+    function updateProgress() {
+      const answered = fullQuestions.filter(q => q.answered).length;
+      progressDisplay.textContent = answered + ' / ' + fullQuestions.length;
+    }
+
+    function goToPrev() {
+      if (currentIndex > 0) { currentIndex--; renderQuestion(currentIndex); }
+    }
+    function goToNext() {
+      if (currentIndex < fullQuestions.length - 1) { currentIndex++; renderQuestion(currentIndex); }
+    }
+
+    function submitExam() {
+      if (examSubmitted) return;
+      let correctCount = 0;
+      fullQuestions.forEach(q => {
+        if (q.selected !== null && q.selected === q.correct) correctCount++;
+      });
+      examSubmitted = true;
+      resultPanel.style.display = 'block';
+      scoreDisplay.innerHTML = correctCount + ' <span>/ ' + fullQuestions.length + '</span>';
+      buildCorrectionGrid();
+      renderQuestion(currentIndex);
+      submitBtn.disabled = true;
+      updateProgress();
+      correctionToggle.style.display = 'flex';
+    }
+
+    function buildCorrectionGrid() {
+      correctionGrid.innerHTML = '';
+      fullQuestions.forEach((q, idx) => {
+        const div = document.createElement('div');
+        div.className = 'correction-item';
+        const num = document.createElement('span');
+        num.className = 'qnum';
+        num.textContent = (idx+1) + '. ' + q.subject.slice(0,6);
+        const mark = document.createElement('span');
+        mark.className = 'mark';
+        const isCorrect = (q.selected !== null && q.selected === q.correct);
+        mark.textContent = isCorrect ? '✔' : '✘';
+        mark.classList.add(isCorrect ? 'correct' : 'wrong');
+        div.appendChild(num);
+        div.appendChild(mark);
+        correctionGrid.appendChild(div);
+      });
+    }
+
+    function resetExam() {
+      fullQuestions.forEach(q => { q.selected = null; q.answered = false; });
+      examSubmitted = false;
+      correctionVisible = false;
+      correctionArea.classList.remove('open');
+      resultPanel.style.display = 'none';
+      submitBtn.disabled = false;
+      currentIndex = 0;
+      renderQuestion(0);
+      updateProgress();
+    }
+
+    function toggleCorrection() {
+      correctionVisible = !correctionVisible;
+      correctionArea.classList.toggle('open', correctionVisible);
+    }
+
+    // Start exam
+    function startExam() {
+      if (selectedSubjects.length !== 4) {
+        selectorMsg.style.display = 'block';
+        selectorMsg.textContent = '⚠️ Please select exactly 4 subjects.';
+        return;
+      }
+      selectorMsg.style.display = 'none';
+      selectorPanel.style.display = 'none';
+      examArea.style.display = 'block';
+      buildExam();
+    }
+
+    // Reset selection
+    function resetSelection() {
+      selectedSubjects = [];
+      renderSubjectSelector();
+      selectorPanel.style.display = 'block';
+      examArea.style.display = 'none';
+      selectorMsg.style.display = 'none';
+      resultPanel.style.display = 'none';
+    }
+
+    // ----- INIT -----
+    renderSubjectSelector();
+
+    // Event listeners
+    startBtn.addEventListener('click', startExam);
+    resetSelBtn.addEventListener('click', resetSelection);
+    prevBtn.addEventListener('click', goToPrev);
+    nextBtn.addEventListener('click', goToNext);
+    submitBtn.addEventListener('click', submitExam);
+    resetExamBtn.addEventListener('click', resetExam);
+    correctionToggle.addEventListener('click', toggleCorrection);
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (examArea.style.display === 'none') return;
+      if (e.key === 'ArrowLeft') goToPrev();
+      else if (e.key === 'ArrowRight') goToNext();
+    });
+
+  })();
+</script>
+</body>
+</html>
